@@ -6,21 +6,22 @@
 ![version](https://img.shields.io/badge/version-0.1.5-blue)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey)
 ![RN](https://img.shields.io/badge/React%20Native-0.72%2B-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-3178C6)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
 ## 개요
 
-React Native 앱에서 JavaScript 몇 줄로 Nap SSP 광고를 요청하면, 네이티브 레이어(Android / iOS)가 실제 광고를 렌더링하는 **플러그인 패턴**의 레퍼런스 구현체입니다.
+React Native 앱에서 TypeScript 몇 줄로 Nap SSP 광고를 요청하면, 네이티브 레이어(Android / iOS)가 실제 광고를 렌더링하는 **플러그인 패턴**의 공식 연동 가이드입니다.
 
 ```
-┌───────────────────────────────────────────────┐
-│             React Native (JS/TS)              │
-│  <BannerAd adUnitId="…" />              ──►  │──► Android / iOS Native Module
-│  new InterstitialAd('…').load().show()  ──►  │──► NapSSP SDK
-│  onAdLoaded / onAdFailed / rewarded     ◄──  │◄── SDK 이벤트
-└───────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│              React Native (TypeScript)           │
+│  <BannerAd adUnitId="…" />               ──►    │──► Android Native Module (Kotlin)
+│  new InterstitialAd('…').load().show()   ──►    │──► iOS Native Module (Swift)
+│  onAdLoaded / onAdFailed / rewarded      ◄──    │◄── NapSSP SDK 이벤트
+└──────────────────────────────────────────────────┘
 ```
 
 ### 지원 광고 포맷
@@ -54,7 +55,7 @@ import { NapSspAd } from 'react-native-nap-ssp';
 NapSspAd.initialize({
   mediaKey: 'YOUR_MEDIA_KEY',
   adUnitIds: ['BANNER_ID', 'NATIVE_ID', 'INTERSTITIAL_ID', 'REWARD_ID'],
-  logLevel: 'info',
+  logLevel: __DEV__ ? 'debug' : 'warn',
 });
 ```
 
@@ -88,6 +89,36 @@ await rewarded.load();
 await rewarded.show();
 ```
 
+👉 더 많은 예제: [examples/](./examples/)
+
+---
+
+## 저장소 구조
+
+```
+react-native-nap-ssp-docs/
+├── examples/                       TypeScript 예제 코드
+│   ├── App.tsx                     앱 진입점 및 SDK 초기화
+│   ├── BannerExample.tsx           배너 광고 예제
+│   ├── NativeExample.tsx           네이티브 광고 예제
+│   ├── InterstitialExample.tsx     전면 광고 예제
+│   └── RewardedExample.tsx         보상형 광고 예제
+├── android/                        Android 설정 파일
+│   ├── MainApplication.kt          어댑터 등록 예제
+│   └── proguard-rules.pro          ProGuard / R8 규칙
+├── ios/                            iOS 설정 파일
+│   ├── Podfile                     CocoaPods 의존성
+│   └── AppDelegate.swift           ATT 권한 요청 예제
+├── GETTING_STARTED.md              처음 연동 시 여기서 시작
+├── ANDROID_SETUP.md                Android 상세 설정
+├── IOS_SETUP.md                    iOS 상세 설정
+├── API_REFERENCE.md                전체 API 명세
+├── MEDIATION_GUIDE.md              미디에이션 네트워크 연동
+├── ADVANCED_USAGE.md               고급 사용법 (S2S, 팝업 옵션)
+├── TROUBLESHOOTING.md              문제 해결
+└── FAQ.md                          자주 묻는 질문
+```
+
 ---
 
 ## 🤖 Android 연동 요약
@@ -118,11 +149,9 @@ dependencies {
 }
 ```
 
-**3. `MainApplication.kt` — 어댑터 등록**
+**3. `MainApplication.kt` — 어댑터 등록** ([전체 예제](./android/MainApplication.kt))
 
 ```kotlin
-import com.nasmedia.admixerssp.common.AdMixer
-
 AdMixer.registerAdapter(AdMixer.ADAPTER_ADMANAGER)
 AdMixer.registerAdapter(AdMixer.ADAPTER_ADFIT)
 AdMixer.registerAdapter(AdMixer.ADAPTER_PANGLE)
@@ -135,7 +164,7 @@ AdMixer.registerAdapter(AdMixer.ADAPTER_PANGLE)
 <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 ```
 
-**5. `proguard-rules.pro` — ProGuard 규칙 추가**
+**5. ProGuard 규칙 추가** ([전체 규칙](./android/proguard-rules.pro))
 
 ```proguard
 -keep class com.nasmedia.admixerssp.** { *; }
@@ -148,7 +177,7 @@ AdMixer.registerAdapter(AdMixer.ADAPTER_PANGLE)
 
 ## 🍎 iOS 연동 요약
 
-**1-A. CocoaPods 방식** — `ios/Podfile`
+**1-A. CocoaPods 방식** — [Podfile 전체 예제](./ios/Podfile)
 
 ```ruby
 platform :ios, '14.0'
@@ -179,7 +208,13 @@ https://github.com/Nasmedia-Tech/iOS-SSP-Mediation-SPM.git (미디에이션)
 <string>사용자 맞춤형 광고 제공을 위해 추적 권한이 필요합니다.</string>
 ```
 
-**3. `.xcworkspace`로 Xcode를 열어 빌드**
+**3. ATT 요청 코드** — [AppDelegate.swift 예제](./ios/AppDelegate.swift)
+
+```swift
+ATTrackingManager.requestTrackingAuthorization { status in
+  // handle status
+}
+```
 
 👉 상세 설정: [IOS_SETUP.md](./IOS_SETUP.md)
 

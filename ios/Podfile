@@ -1,0 +1,31 @@
+# react-native-nap-ssp — iOS Podfile 예제
+# ios/Podfile 을 아래와 같이 구성하세요.
+
+platform :ios, '14.0'
+
+# React Native CocoaPods 설정 (기존 방식 유지)
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+
+target 'YourAppName' do
+  config = use_native_modules!
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  use_frameworks!
+
+  # ── Nap SSP Core (필수) ──────────────────────────────────────────
+  pod 'AdMixerMediation'
+
+  # ── 미디에이션 어댑터 (사용할 것만 추가) ──────────────────────────
+  pod 'AdMixerMediationGAM'       # Google Ad Manager
+  pod 'AdMixerMediationAdFit'     # Kakao AdFit
+  pod 'AdMixerMediationPangle'    # Pangle (TikTok)
+  pod 'AdMixerMediationAppLovin'  # AppLovin
+  pod 'AdMixerMediationUnityAds'  # Unity Ads
+
+  post_install do |installer|
+    react_native_post_install(installer)
+  end
+end
