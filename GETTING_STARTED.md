@@ -215,6 +215,9 @@ function MyScreen() {
 | `BANNER_320x50` | 320 × 50 (기본 배너) |
 | `BANNER_320x100` | 320 × 100 |
 | `BANNER_300x250` | 300 × 250 (중형 직사각형) |
+| `BANNER_320x480` | 320 × 480 |
+| `LARGE_BANNER` | 320 × 100 (대형 배너) |
+| `MEDIUM_RECTANGLE` | 300 × 250 (미디엄 직사각형) |
 | `SMART_BANNER` | 화면 너비에 맞게 자동 조절 |
 
 ---

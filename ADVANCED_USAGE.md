@@ -118,9 +118,10 @@ const rewarded = new RewardedAd('보상형_광고_ID', {
 
 ```tsx
 const interstitial = new InterstitialAd('전면_광고_ID', {
-  viewType: 'popup',             // 'basic' | 'popup' | 'countDown'
-  closeButtonTitle: '닫기',      // 팝업 형식의 닫기 버튼 텍스트
-  countdownSeconds: 5,           // countDown 형식의 대기 시간 (초)
+  type: 'popup',             // 'default' | 'popup' | 'countdown'
+  buttonLeftText: '닫기',    // 팝업 형식의 좌측 버튼 텍스트
+  buttonRightText: '계속',   // 팝업 형식의 우측 버튼 텍스트 (선택)
+  countDownTime: 5,          // countdown 형식의 대기 시간 (초)
 });
 ```
 

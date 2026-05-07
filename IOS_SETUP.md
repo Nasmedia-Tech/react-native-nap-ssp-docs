@@ -1,6 +1,6 @@
 # 🍎 iOS 설정 가이드
 
-![iOS](https://img.shields.io/badge/iOS-13.0%2B-lightgrey)
+![iOS](https://img.shields.io/badge/iOS-14.0%2B-lightgrey)
 ![Xcode](https://img.shields.io/badge/Xcode-15.3%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)
 
@@ -24,7 +24,7 @@
 `ios/Podfile`에 다음을 추가하고 `pod install`을 실행합니다.
 
 ```ruby
-platform :ios, '13.0'
+platform :ios, '14.0'
 
 target 'YourAppName' do
   use_frameworks!
@@ -144,16 +144,25 @@ Xcode → **File → Add Package Dependencies**에서 아래 URL을 추가합니
 
 ## 6. 디버그 로그
 
-개발 중 광고 로드 흐름을 확인하려면 초기화 전에 디버그 모드를 활성화합니다.
+개발 중 광고 로드 흐름을 확인하려면 `NapSspAd.initialize()` 의 `logLevel` 옵션을 사용하세요.  
+`setDebugEnabled()`는 초기화 내부에서 자동으로 호출되므로 직접 호출할 필요가 없습니다.
 
-```swift
-import AdMixerMediation
-
-// AppDelegate 또는 App의 init()에서 호출
-AMMediation.shared.setDebugEnabled(isEnabled: true)
+```tsx
+// JS 초기화 시 logLevel 설정
+NapSspAd.initialize({
+  mediaKey: '...',
+  adUnitIds: [...],
+  logLevel: 'debug',  // 'verbose' | 'debug' | 'info' | 'warn' | 'error' | 'none'
+});
 ```
 
-> 💡 운영 환경 배포 전 반드시 `false`로 변경하거나 해당 라인을 제거하세요.
+런타임 중 로그 레벨을 변경하려면:
+
+```tsx
+NapSspAd.setLogLevel('debug');
+```
+
+> 💡 운영 환경 배포 전 `logLevel: 'none'` 또는 `'warn'`으로 변경하세요.
 
 ---
 

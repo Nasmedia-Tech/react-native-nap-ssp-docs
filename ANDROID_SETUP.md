@@ -53,12 +53,13 @@ dependencies {
 
 ```gradle
 dependencies {
-    implementation 'io.github.nasmedia-tech:admixer-admanager:1.0.14'   // Google AdManager
-    implementation 'io.github.nasmedia-tech:admixer-adfit:1.0.10'        // Kakao AdFit
-    implementation 'io.github.nasmedia-tech:admixer-pangle:1.0.10'       // Pangle
-    implementation 'com.pangle.global:pag-sdk:7.7.0.2'                   // Pangle 사용 시 필수
-    implementation 'io.github.nasmedia-tech:admixer-applovin:1.0.8'      // AppLovin
-    implementation 'io.github.nasmedia-tech:admixer-unity:1.0.6'         // Unity Ads
+    implementation 'io.github.nasmedia-tech:admixer-admanager:1.0.15_delta'  // Google AdManager
+    implementation 'io.github.nasmedia-tech:admixer-adfit:1.0.12_beta'        // Kakao AdFit
+    implementation 'io.github.nasmedia-tech:admixer-pangle:1.0.12_beta'       // Pangle
+    implementation 'com.pangle.global:pag-sdk:7.7.0.2'                        // Pangle 사용 시 필수
+    implementation 'io.github.nasmedia-tech:admixer-applovin:1.0.10_beta'     // AppLovin
+    implementation 'io.github.nasmedia-tech:admixer-unity:1.0.7_beta'         // Unity Ads
+    implementation 'io.github.nasmedia-tech:admixer-mobwith:1.0.0'            // Mobwith (선택)
 }
 ```
 
@@ -110,9 +111,14 @@ dependencies {
 # Mediation Adapters
 -keep class com.nasmedia.admanager.**  { *; }
 -keep class com.nasmedia.adfit.**      { *; }
--keep class com.nasmedia.pangle.**     { *; }
--keep class com.nasmedia.applovin.**   { *; }
--keep class com.nasmedia.unity.**      { *; }
+
+# Pangle (실제 SDK 패키지)
+-keep class com.pangle.**              { *; }
+-dontwarn com.pangle.**
+
+# AppLovin (실제 SDK 패키지)
+-keep class com.applovin.**            { *; }
+-dontwarn com.applovin.**
 
 # Google Ads
 -keep class com.google.android.gms.ads.** { *; }
@@ -149,6 +155,7 @@ class MainApplication : Application(), ReactApplication {
         AdMixer.registerAdapter(AdMixer.ADAPTER_PANGLE)     // Pangle
         AdMixer.registerAdapter(AdMixer.ADAPTER_APPLOVIN)   // AppLovin
         AdMixer.registerAdapter(AdMixer.ADAPTER_UNITY)      // Unity Ads
+        AdMixer.registerAdapter(AdMixer.ADAPTER_MOBWITH)    // Mobwith (선택)
     }
 }
 ```
