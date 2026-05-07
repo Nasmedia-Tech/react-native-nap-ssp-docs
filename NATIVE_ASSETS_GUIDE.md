@@ -102,13 +102,16 @@ Xcode에서 `.xib` 파일을 생성하고 뷰 클래스를 아래와 같이 매�
 
 ### 구성 절차
 1. `UIView` 클래스를 `AMMNativeAdView`로 설정합니다.
-2. 내부 구성 요소들을 아래 아웃렛(Outlet)에 연결합니다.
-   - `headlineView`: (UILabel)
-   - `mediaView`: (AMMMediaView)
-   - `callToActionView`: (UIButton)
-   - `iconView`: (UIImageView)
-   - `bodyView`: (UILabel)
-   - `advertiserView`: (UILabel)
+2. 내부 구성 요소들을 아래 프로퍼티에 연결합니다. **프로퍼티 이름이 정확히 일치해야** 합니다.
+
+| 프로퍼티 이름 | 뷰 타입 | 설명 |
+| :--- | :--- | :--- |
+| `iv_icon` | `UIImageView` | 아이콘 이미지 |
+| `l_headline` | `UILabel` | 제목 |
+| `l_advertiser` | `UILabel` | 광고주명 |
+| `l_description` | `UILabel` | 본문 설명 |
+| `media` | `AMMMediaView` | 메인 이미지/동영상 |
+| `b_cta` | `UIButton` | CTA 버튼 |
 
 ---
 

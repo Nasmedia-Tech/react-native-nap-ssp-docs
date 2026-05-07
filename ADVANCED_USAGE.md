@@ -55,7 +55,39 @@ const handleFinishStage = async () => {
 
 ---
 
-## 5. 디버그 vs 릴리즈 빌드 동작 차이
+## 5. 보상형 광고 S2S 파라미터
+
+보상형 광고를 서버-to-서버(S2S) 방식으로 검증할 때, 사용자 식별값을 SDK에 함께 전달할 수 있습니다.
+
+```tsx
+const rewarded = new RewardedAd('보상형_광고_ID', {
+  // S2S 콜백 시 서버로 전달될 사용자 식별 파라미터
+  userId: 'user_unique_id',     // 유저 식별자
+  name: '홍길동',               // (선택) 유저 이름
+  phone: '010-0000-0000',       // (선택) 유저 연락처
+});
+```
+
+> S2S 보상 방식에서는 클라이언트의 `onRewarded` 콜백보다 서버 콜백이 더 신뢰성이 높습니다. 클라이언트 콜백은 보조 수단으로만 활용하세요.
+
+---
+
+## 6. 전면 광고 팝업 옵션 (InterstitialAd)
+
+`InterstitialAd`를 팝업 배너 형식으로 사용할 때 종료 버튼 및 카운트다운을 커스터마이징할 수 있습니다.
+
+```tsx
+const interstitial = new InterstitialAd('전면_광고_ID', {
+  // 종료 버튼 텍스트 (기본값: '광고종료')
+  closeButtonTitle: '닫기',
+  // 자동 종료 카운트다운 (초, 기본값: 5)
+  countdownSeconds: 5,
+});
+```
+
+---
+
+## 7. 디버그 vs 릴리즈 빌드 동작 차이
 
 v0.1.5부터 빌드 타입에 따라 광고 실패 시 동작이 달라집니다. 이를 인지하고 개발/검증 계획을 세우는 것이 중요합니다.
 
