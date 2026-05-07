@@ -15,13 +15,84 @@
 `res/layout/` 디렉토리에 레이아웃 파일을 생성하십시오.
 
 ### 필수 구성 요소 (View ID)
-SDK에서 인지할 수 있도록 아래 ID를 사용하여 뷰를 배치하십시오.
-- **Icon**: `com_nasmedia_ad_icon` (ImageView)
-- **Title**: `com_nasmedia_ad_headline` (TextView)
-- **Body**: `com_nasmedia_ad_body` (TextView)
-- **Media**: `com_nasmedia_ad_media` (com.nasmedia.admixerssp.AMMediaView)
-- **CTA**: `com_nasmedia_ad_call_to_action` (Button)
-- **Advertiser**: `com_nasmedia_ad_advertiser` (TextView)
+SDK(`NativeAdViewBinder`)에서 인지할 수 있도록 아래 ID와 클래스를 정확히 사용하십시오.
+
+| 요소 | View ID | 뷰 타입 |
+| :--- | :--- | :--- |
+| Icon | `nap_ssp_native_icon` | `ImageView` |
+| Title | `nap_ssp_native_title` | `TextView` |
+| Advertiser | `nap_ssp_native_adv` | `TextView` |
+| Body | `nap_ssp_native_desc` | `TextView` |
+| Media (이미지/동영상) | `nap_ssp_native_main` | `com.nasmedia.admixerssp.common.nativeads.NativeMainAdView` |
+| CTA | `nap_ssp_native_cta` | `Button` |
+
+### 레이아웃 예시
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/nap_ssp_native_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/nap_ssp_native_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/nap_ssp_native_icon"
+        android:maxLines="2"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/nap_ssp_native_adv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nap_ssp_native_title"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/nap_ssp_native_icon" />
+
+    <TextView
+        android:id="@+id/nap_ssp_native_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nap_ssp_native_icon"
+        android:layout_marginTop="8dp"
+        android:maxLines="3" />
+
+    <com.nasmedia.admixerssp.common.nativeads.NativeMainAdView
+        android:id="@+id/nap_ssp_native_main"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/nap_ssp_native_desc"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/nap_ssp_native_main_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+
+    </com.nasmedia.admixerssp.common.nativeads.NativeMainAdView>
+
+    <Button
+        android:id="@+id/nap_ssp_native_cta"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@id/nap_ssp_native_main"
+        android:layout_marginTop="8dp" />
+
+</RelativeLayout>
+```
 
 ---
 
