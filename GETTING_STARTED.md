@@ -1,7 +1,7 @@
 # React Native Nap SSP — 시작 가이드
 
 ![npm](https://img.shields.io/badge/npm-react--native--nap--ssp-red)
-![version](https://img.shields.io/badge/version-0.1.6-blue)
+![version](https://img.shields.io/badge/version-0.1.5-blue)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -37,7 +37,7 @@
 | Android minSdk | 21 이상 |
 | Android targetSdk | 34 이상 권장 |
 | Android JDK | 17 |
-| iOS | 14.0 이상 |
+| iOS | 13.0 이상 |
 | Xcode | 15.3 이상 |
 | **미디어 키 (Media Key)** | 나스미디어 파트너 운영팀 발급 |
 | **광고 단위 ID (Ad Unit ID)** | 나스미디어 파트너 운영팀 발급 |
@@ -136,7 +136,7 @@ class MainApplication : Application(), ReactApplication {
 `ios/Podfile`:
 
 ```ruby
-platform :ios, '14.0'
+platform :ios, '13.0'
 
 target 'YourAppName' do
   use_frameworks!
@@ -210,15 +210,19 @@ function MyScreen() {
 }
 ```
 
-| 사이즈 상수 | 크기 |
-| :--- | :--- |
-| `BANNER_320x50` | 320 × 50 (기본 배너) |
-| `BANNER_320x100` | 320 × 100 |
-| `BANNER_300x250` | 300 × 250 (중형 직사각형) |
-| `BANNER_320x480` | 320 × 480 |
-| `LARGE_BANNER` | 320 × 100 (대형 배너) |
-| `MEDIUM_RECTANGLE` | 300 × 250 (미디엄 직사각형) |
-| `SMART_BANNER` | 화면 너비에 맞게 자동 조절 |
+| 사이즈 상수 | 크기 | 지원 어댑터 |
+| :--- | :--- | :--- |
+| `BANNER_320x50` | 320 × 50 (기본 배너) | 공통 |
+| `BANNER_320x100` | 320 × 100 | 공통 |
+| `BANNER_300x250` | 300 × 250 (중형 직사각형) | 공통 |
+| `BANNER_320x480` | 320 × 480 | 공통 |
+| `BANNER_360x230` | 360 × 230 | NaverAdManager (NAM) |
+| `BANNER_360x210` | 360 × 210 | Kakao AdFit |
+| `LARGE_BANNER` | 320 × 100 (대형 배너) | 공통 |
+| `MEDIUM_RECTANGLE` | 300 × 250 (미디엄 직사각형) | 공통 |
+| `SMART_BANNER` | 화면 너비에 맞게 자동 조절 | 공통 |
+
+> `BANNER_360x230` / `BANNER_360x210`은 NaverAdManager·Kakao AdFit 전용 사이즈입니다. 파트너 사이트에서 해당 사이즈 전용 Ad Unit ID를 별도 발급받아야 광고가 노출됩니다.
 
 ---
 
@@ -343,7 +347,7 @@ async function showRewarded() {
 
 ## 7. 디버그 vs 릴리즈 빌드 동작 차이
 
-v0.1.6부터 DEBUG / RELEASE 빌드에 따라 광고 실패 처리 방식이 다릅니다.
+v0.1.5부터 DEBUG / RELEASE 빌드에 따라 광고 실패 처리 방식이 다릅니다.
 
 | 상황 | DEBUG 빌드 | RELEASE 빌드 |
 | :--- | :--- | :--- |
@@ -390,7 +394,7 @@ ProGuard 설정을 확인하세요. → [Step 5](#step-5--proguard-설정-릴리
 | :--- | :--- |
 | **기술 문의** | nap_adx@nasmedia.co.kr |
 | **미디어 키 / 광고 ID 발급** | 나스미디어 파트너 운영팀 |
-| **플러그인 버전** | 0.1.6 |
+| **플러그인 버전** | 0.1.5 |
 | **npm 패키지** | `react-native-nap-ssp` |
 
 ---
