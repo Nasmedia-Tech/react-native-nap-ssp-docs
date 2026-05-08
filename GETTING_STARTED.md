@@ -1,7 +1,7 @@
 # React Native Nap SSP — 시작 가이드
 
 ![npm](https://img.shields.io/badge/npm-react--native--nap--ssp-red)
-![version](https://img.shields.io/badge/version-0.1.5-blue)
+![version](https://img.shields.io/badge/version-0.1.6-blue)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -343,7 +343,7 @@ async function showRewarded() {
 
 ## 7. 디버그 vs 릴리즈 빌드 동작 차이
 
-v0.1.5부터 DEBUG / RELEASE 빌드에 따라 광고 실패 처리 방식이 다릅니다.
+v0.1.6부터 DEBUG / RELEASE 빌드에 따라 광고 실패 처리 방식이 다릅니다.
 
 | 상황 | DEBUG 빌드 | RELEASE 빌드 |
 | :--- | :--- | :--- |
@@ -390,7 +390,7 @@ ProGuard 설정을 확인하세요. → [Step 5](#step-5--proguard-설정-릴리
 | :--- | :--- |
 | **기술 문의** | nap_adx@nasmedia.co.kr |
 | **미디어 키 / 광고 ID 발급** | 나스미디어 파트너 운영팀 |
-| **플러그인 버전** | 0.1.5 |
+| **플러그인 버전** | 0.1.6 |
 | **npm 패키지** | `react-native-nap-ssp` |
 
 ---

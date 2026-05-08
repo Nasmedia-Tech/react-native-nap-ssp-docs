@@ -127,8 +127,6 @@ dependencies {
 # Google Ads
 -keep class com.google.android.gms.ads.** { *; }
 
-# RN Plugin Bridge
--keep class com.gwangy.NapSsp** { *; }
 ```
 
 > ⚠️ 이 설정 없이 릴리즈 빌드를 배포하면 광고가 노출되지 않습니다.
