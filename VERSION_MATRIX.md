@@ -9,6 +9,9 @@
 | Plugin 버전 | Android Core SDK | iOS Core SDK | 주요 변경 사항 |
 | :--- | :--- | :--- | :--- |
 | **0.1.7** | `1.0.23` | `2.3.3` | 버전 통일, 공개 가이드 문서 npm 배포 포함 |
+| **0.1.6** | `1.0.23` | `2.3.3` | 패키지 내부 수정 |
+| **0.1.5** | `1.0.23` | `2.3.3` | 패키지 내부 수정 |
+| **0.1.4** | `1.0.23` | `2.3.3` | npm 패키지 docs/ 구성 정비 |
 | **0.1.3** | `1.0.23` | `2.3.3` | iOS SPM 2.3.3 업데이트, 스레드 안전성 수정, 이벤트 소급 구독 |
 | **0.1.2** | `1.0.23` | `2.3.2` | 전면형 API 통일, Maestro 검증 강화 |
 | **0.1.1** | `1.0.21` | `2.2.0` | 네이티브 전 포맷 브릿지 연결 |
@@ -28,7 +31,7 @@
 | **Pangle** | `admixer-pangle` | `1.0.12_beta` |
 | **AppLovin** | `admixer-applovin` | `1.0.10_beta` |
 | **UnityAds** | `admixer-unity` | `1.0.7_beta` |
-| **Ads Identifier** | `play-services-ads-identifier` | `18.3.0` |
+| **Ads Identifier** | `play-services-ads-identifier` | `18.9.0` |
 
 > Android 미디에이션 어댑터는 추가 리포지토리가 필요합니다:
 > - `https://devrepo.kakao.com/nexus/content/groups/public/` (AdFit)
