@@ -111,6 +111,10 @@ dependencies {
 # Mediation Adapters
 -keep class com.nasmedia.admanager.**  { *; }
 -keep class com.nasmedia.adfit.**      { *; }
+-keep class com.nasmedia.pangle.**     { *; }
+-keep class com.nasmedia.applovin.**   { *; }
+-keep class com.nasmedia.unity.**      { *; }
+-keep class com.kakao.adfit.**         { *; }
 
 # Pangle (실제 SDK 패키지)
 -keep class com.pangle.**              { *; }
