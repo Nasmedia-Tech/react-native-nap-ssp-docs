@@ -24,3 +24,5 @@
 광고 로드 실패는 디버그와 릴리스 모두 실패로 전달됩니다. 실광고 연동 예제는 [ExampleHostApp](https://github.com/glenn-yu/NapSspReactNativePluginSample/tree/main/example/ExampleHostApp)을 참고하세요.
 
 [nap mx Android 가이드](https://napmx.github.io/#/android/) · [iOS 가이드](https://napmx.github.io/#/ios/)
+
+[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. [빌드 검증 범위](VERSION_MATRIX.md#빌드-검증-범위)에서 로컬 재검증 상태와 구분해 확인하세요.

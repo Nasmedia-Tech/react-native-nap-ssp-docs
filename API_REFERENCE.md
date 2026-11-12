@@ -26,4 +26,4 @@
 
 `normalizeAdError`는 오류 값을 공통 형태로 변환하는 공개 helper입니다. 모든 네이티브 Promise가 자동으로 동일한 정규화 경로를 거친다고 가정하지 말고 각 API의 실패 처리를 구현하세요. [helper 정의](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/src/errors.ts)
 
-실제 사용 순서는 [시작하기](GETTING_STARTED.md)와 [광고 생명주기](ADVANCED_USAGE.md)에 설명합니다. Android 전체 빌드, iOS Xcode 빌드 및 실광고 수신은 이번 문서 정비에서 검증하지 않았습니다.
+실제 사용 순서는 [시작하기](GETTING_STARTED.md)와 [광고 생명주기](ADVANCED_USAGE.md)에 설명합니다. [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다.

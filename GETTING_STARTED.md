@@ -55,4 +55,4 @@ export function AdScreen({config}: {config: NapSspConfig}) {
 
 초기화 성공과 광고 fill 성공은 별개입니다. 발급 ID, 서버 수요, 네트워크 설정을 확인하고 실패 콜백의 `code`와 `message`를 기록하세요. 디버그에서도 실제 SDK를 사용하며 실패를 성공으로 바꾸지 않습니다. Android 테스트 모드는 iOS에 적용되지 않습니다. [FAQ](FAQ.md) · [실행 가능한 예제](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/example/ExampleHostApp)
 
-이번 문서 정비에서는 Android 전체 네이티브 빌드, iOS Xcode 빌드 및 실광고 수신을 검증하지 않았습니다.
+[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 로컬 의존성 다운로드 실패와 CI 성공은 [검증 범위](VERSION_MATRIX.md#빌드-검증-범위)에서 구분합니다.

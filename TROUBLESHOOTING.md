@@ -41,4 +41,4 @@
 
 플러그인/RN 버전, OS/기기, 선택한 어댑터, 실제 Kotlin/compileSdk 또는 Xcode/Pods 버전, 발생 단계와 최소 재현 순서, 오류 코드와 비식별 로그를 정리하세요. 테스트 기기 GAID와 사용자 식별자는 로그/티켓에서 제거합니다. 개발 중 `setLogLevel('verbose')`로 확인하고 배포 설정은 `error` 등 적절한 수준으로 낮추세요.
 
-이번 문서 정비에서 Android 전체 네이티브 빌드, iOS Xcode 빌드, 모든 어댑터 조합 및 실광고 수신은 검증하지 않았습니다.
+[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 로컬 재검증은 의존성 다운로드 단계에서 실패했으며, 이를 라이브러리 컴파일 실패로 해석하지 않습니다. [상세 검증 범위](VERSION_MATRIX.md#빌드-검증-범위)

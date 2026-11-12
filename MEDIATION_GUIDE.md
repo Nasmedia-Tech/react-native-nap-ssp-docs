@@ -43,7 +43,7 @@ Android Unity는 서버 설정으로 지연 초기화하고 Android NAM publishe
 
 ## 네트워크를 추가할 때 확인할 조건
 
-Android는 어댑터별 Maven 저장소와 minSdk를 확인하고 compileSdk 35 이상을 유지하세요. Kotlin은 플러그인 기본값 2.1.21과 호스트 설정의 호환성을 확인해야 하며 플러그인 0.6.0의 React Native 네이티브 빌드는 미검증입니다. AppLovin은 minSdk 24, GAM/NAM은 23이 필요합니다. GAM의 Android Google Mobile Ads 상한은 25.2.0입니다. iOS는 iOS 14 이상을 기준으로 하되 Teads는 Xcode 26 이상을 사용합니다. [Android 조건](ANDROID_SETUP.md) · [iOS 조건](IOS_SETUP.md)
+Android는 어댑터별 Maven 저장소와 minSdk를 확인하고 compileSdk 35 이상을 유지하세요. Kotlin은 플러그인 기본값 2.1.21과 호스트 설정의 호환성을 확인해야 하며 CI에서 검증한 GAM+AdFit 라이브러리 빌드 외의 호스트 앱 및 어댑터 조합은 별도 확인이 필요합니다. AppLovin은 minSdk 24, GAM/NAM은 23이 필요합니다. GAM의 Android Google Mobile Ads 상한은 25.2.0입니다. iOS는 iOS 14 이상을 기준으로 하되 Teads는 Xcode 26 이상을 사용합니다. [Android 조건](ANDROID_SETUP.md) · [iOS 조건](IOS_SETUP.md)
 
 동의 값은 SDK 시작 전에 확정해야 합니다. 일부 네트워크는 시작 시점에만 값을 읽습니다. [개인정보 설정](PRIVACY_GUIDE.md)
 
@@ -51,4 +51,4 @@ Android는 어댑터별 Maven 저장소와 minSdk를 확인하고 compileSdk 35 
 
 설치한 어댑터 → 키 및 저장소 → 서버 waterfall → 해당 네트워크 응답 순으로 확인하세요. 전체 요청이 성공해도 특정 네트워크가 항상 선택되는 것은 아닙니다. `nap_ssp_no_ads`는 단독으로 설치 오류를 증명하지 않습니다. [진단 순서](TROUBLESHOOTING.md#런타임-진단)
 
-버전 기준은 플러그인 0.6.0입니다. 모든 어댑터 조합의 네이티브 빌드 및 실광고 fill은 이번 문서 정비에서 검증하지 않았습니다.
+버전 기준은 플러그인 0.6.0입니다. [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다.

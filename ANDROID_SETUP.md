@@ -15,7 +15,7 @@
 
 React Native 버전만으로 Kotlin 호환성을 판단하지 마세요. 기존 프로젝트의 `android/build.gradle`, 버전 카탈로그 및 Kotlin 플러그인 선언을 확인하세요. React Native 0.79 템플릿은 Kotlin 2.0.21, 0.80 템플릿은 2.1.20을 사용하지만 실제 프로젝트는 다를 수 있습니다. 호환되지 않는 metadata 오류가 있으면 호스트 Kotlin 플러그인을 호환 버전으로 조정하세요. 플러그인 기본값은 `2.1.21`이며 `napSsp.kotlinVersion`으로 변경할 수 있습니다. 호스트 Gradle 설정 및 최종 의존성을 함께 확인하고 전체 앱을 빌드하세요.
 
-공식 SDK 가이드는 Flutter 호스트(AGP 8.10.1, Java 17, debug 및 R8 release)에서 Kotlin 2.1.0과 2.2.10을 검증했고 2.2.10을 권장합니다. 이 결과는 React Native 검증이 아닙니다. 플러그인 0.6.0의 네이티브 빌드는 완료되지 않았으므로 일괄 최소 Kotlin 버전이나 RN 호환성 보증으로 해석하지 마세요.
+공식 SDK 가이드는 Flutter 호스트(AGP 8.10.1, Java 17, debug 및 R8 release)에서 Kotlin 2.1.0과 2.2.10을 검증했고 2.2.10을 권장합니다. 이 결과는 React Native 검증이 아닙니다. 플러그인 0.6.0의 Android 라이브러리 CI 빌드는 성공했지만, 단일 구성의 결과를 일괄 최소 Kotlin 버전이나 모든 RN 호스트 호환성 보증으로 해석하지 마세요.
 
 [정확한 Kotlin 설정과 JVM target 조정](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#3-3-kotlin-compatibility)
 
@@ -75,4 +75,4 @@ Google Mobile Ads `play-services-ads`는 25.2.0 이하를 사용합니다. 다�
 
 Core, 어댑터, 플러그인의 consumer ProGuard 규칙은 자동 병합됩니다. 임의의 전체 keep 규칙을 추가하기 전에 실제 R8 오류와 선택한 어댑터를 확인하세요. [R8 설명](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#3-7-proguard--r8)
 
-설정 후 네이티브 앱을 다시 빌드하고 [초기화 완료 후 광고 표시](GETTING_STARTED.md)를 확인하세요. 이번 문서 정비에서 Android 전체 네이티브 빌드와 실광고 수신을 검증하지 않았습니다.
+설정 후 네이티브 앱을 다시 빌드하고 [초기화 완료 후 광고 표시](GETTING_STARTED.md)를 확인하세요. [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 로컬 재검증은 의존성 다운로드 실패로 완료하지 못했습니다.

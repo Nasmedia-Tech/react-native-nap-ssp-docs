@@ -4,7 +4,7 @@
 
 ## 어떤 React Native 버전을 사용해야 하나요?
 
-0.76 이상을 기준으로 합니다. Android compileSdk 35 이상을 확인하고 Kotlin은 플러그인 기본값 2.1.21과 실제 호스트 설정의 호환성을 별도로 확인하세요. 플러그인 0.6.0의 React Native 네이티브 빌드는 완료되지 않아 일괄 최소 Kotlin 버전은 검증되지 않았습니다. iOS 최소 버전은 14입니다. [버전표](VERSION_MATRIX.md)
+0.76 이상을 기준으로 합니다. Android compileSdk 35 이상을 확인하고 Kotlin은 플러그인 기본값 2.1.21과 실제 호스트 설정의 호환성을 별도로 확인하세요. GAM+AdFit 설정의 Android 라이브러리 CI 빌드는 성공했지만, 이 결과가 일괄 최소 Kotlin 버전의 검증을 뜻하지 않습니다. iOS 최소 버전은 14입니다. [버전표](VERSION_MATRIX.md)
 
 ## 어댑터를 전부 설치해야 하나요?
 
@@ -38,4 +38,4 @@ Expo Go에는 모듈이 없으므로 커스텀 네이티브 빌드가 필요합�
 
 보상 광고의 `rewarded` 이벤트에 연결합니다. `closed`는 보상 획득을 뜻하지 않습니다. 앱의 거래/사용자 식별 기준으로 중복 지급을 방지하세요. [보상 payload](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#rewardpayload)
 
-이번 문서 정비는 모든 RN/어댑터 조합, Android 전체 빌드, iOS Xcode 빌드 및 실광고 수신 검증을 포함하지 않습니다.
+[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 전체 검증 범위는 [버전표](VERSION_MATRIX.md#빌드-검증-범위)를 참고하세요.
