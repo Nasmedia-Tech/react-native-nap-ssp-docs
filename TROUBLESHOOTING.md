@@ -1,236 +1,44 @@
-> 이 문서는 플러그인 저장소의 최신 가이드와 동기화했습니다.
+# 문제 해결
 
-# FAQ & troubleshooting
+플러그인 0.6.0 기준으로 오류가 발생한 단계를 먼저 구분하세요. 설치 전 선택에 관한 질문은 [FAQ](FAQ.md)를 참고하세요.
 
-## Build
+## 빌드 진단
 
-### `Class 'kotlin.Unit' was compiled with an incompatible version of Kotlin`
+| 증상 | 확인 및 조치 |
+| --- | --- |
+| Kotlin metadata / incompatible Kotlin 오류 | 호스트 Kotlin 설정과 의존성 확인 후 호환 버전으로 조정. 플러그인 기본값 2.1.21이며 일괄 최소 버전은 미검증 |
+| compile against version 35 or later | 호스트 compileSdk를 35 이상으로 변경 |
+| inconsistent JVM target | Java와 Kotlin target 일치, 기본값 17 확인 |
+| Could not find AdFit/Pangle/Teads SDK | 선택한 어댑터의 Maven 저장소를 소비 앱에 추가 |
+| uses-sdk minSdk 오류 | 선택한 어댑터 최대 요구값 적용: GAM/NAM 23, AppLovin 24 |
+| networkSecurityConfig 병합 충돌 | 앱의 자체 설정이 있는지 확인 후 tools:replace 병합 규칙 적용 |
+| Google Mobile Ads 충돌 | 의존성 트리 확인, play-services-ads 25.2.0 이하 및 중복 SDK 확인 |
+| Teads pod 설치 실패 | Xcode 26 이상인지 확인하거나 불필요한 Teads subspec 제거 |
 
-nap mx core 2.5.1 ships `kotlin-stdlib:2.2.10`. Build the host app with **Kotlin 2.1 or newer** —
-see [Setup](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#kotlin-요구사항). React Native 0.81+ already defaults to 2.1.20.
+설정 코드: [Android Kotlin](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#3-3-kotlin-compatibility), [Maven 저장소](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#3-2-declare-the-adapter-maven-repositories--required), [Manifest](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#3-5-manifest), [iOS Pods](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#4-1-cocoapods).
 
-### `requires libraries and applications that depend on it to compile against version 35 or later`
+## 런타임 진단
 
-Raise the app's `compileSdkVersion` to 35 (or 36). React Native 0.76+ already does; older templates
-compile against 34 and cannot consume this version.
+1. `initialize()` Promise가 성공했는지 확인합니다. `nap_ssp_not_initialized`라면 광고 컴포넌트를 초기화 완료 후 마운트하세요. [안전한 시작 예제](GETTING_STARTED.md#3-초기화-완료-후-광고-마운트)
+2. 광고 단위가 초기화의 `adUnitIds`에 포함되어 있고 숫자 문자열이며 요청한 형식과 일치하는지 확인합니다.
+3. `onAdFailedToLoad` 또는 전면 광고 `loadFailed`에서 `AdError.code`, `message`를 확인합니다. [코드표](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#aderror)
+4. `nap_ssp_no_ads`는 서버 수요/재고와 네트워크 응답을 확인합니다. 무제한 즉시 재시도는 피하고 앱의 재시도 정책을 적용하세요.
+5. 특정 네트워크만 문제라면 바이너리의 어댑터, 네트워크 키, 서버 waterfall, 개인정보 값을 차례로 확인합니다. [미디에이션](MEDIATION_GUIDE.md)
 
-### `Could not find tv.teads.sdk.android:sdk` / `com.kakao.adfit:ads-base` / `com.pangle.global:pag-sdk`
+## 모듈 및 화면 상태 오류
 
-Those SDKs are not on Maven Central. Add the repositories **to your app** — Gradle resolves a
-library's transitive dependencies with the consuming project's repositories, so declaring them
-inside the plugin would not help:
+`nap_ssp_view_not_linked` / `napssp_sdk_not_linked`는 JS 번들만 업데이트한 상태인지 확인하세요. CocoaPods 설치, autolinking 및 네이티브 재빌드가 필요합니다. Expo Go에서는 모듈을 사용할 수 없습니다.
 
-```groovy
-// android/settings.gradle
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }   // AdFit
-        maven { url 'https://artifact.bytedance.com/repository/pangle/' }         // Pangle
-        maven { url 'https://sdk.teads.tv/android/repo' }                         // Teads
-        maven { url 'https://teads.jfrog.io/artifactory/SDKAndroid-maven-prod' }  // Teads
-        maven { url 'https://developer.huawei.com/repo/' }                        // Teads: Huawei
-    }
-}
-```
+`nap_ssp_activity_required`는 Android의 표시 가능한 Activity가 필요하다는 뜻입니다. 앱이 foreground이고 화면이 살아 있는 시점에 표시하세요. 전면 광고는 `load()` 완료 후 `show()`를 호출하고 화면 해제 시 listener 해제와 `destroy()`를 수행합니다. [생명주기](ADVANCED_USAGE.md)
 
-The Gradle build prints the exact list for the adapters you enabled.
+배너가 잘리면 부모 width/height와 서버 광고 크기를 확인하세요. `size`는 서버 creative 크기를 강제하지 않습니다. 네이티브 광고 asset 누락은 커스텀 XML ID 또는 XIB outlet을 확인합니다. [네이티브 asset](NATIVE_ASSETS_GUIDE.md)
 
-### `Manifest merger failed: android:networkSecurityConfig`
+## 보상 및 이벤트 문제
 
-The core SDK declares its own network security config. If your app declares one too, let yours win:
+보상은 `rewarded`에서 처리하며 `closed`에서 지급하지 않습니다. 중복 listener 또는 재마운트 시 미해제 listener를 확인하세요. iOS SDK에서 전달되지 않는 `skipped` 이벤트를 반드시 기다리는 흐름은 사용하지 마세요. [이벤트 정의](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#events)
 
-```xml
-<application
-    android:networkSecurityConfig="@xml/your_network_security_config"
-    tools:replace="android:networkSecurityConfig">
-```
+## 지원 요청에 포함할 정보
 
-### `uses-sdk:minSdkVersion N cannot be smaller than version 24`
+플러그인/RN 버전, OS/기기, 선택한 어댑터, 실제 Kotlin/compileSdk 또는 Xcode/Pods 버전, 발생 단계와 최소 재현 순서, 오류 코드와 비식별 로그를 정리하세요. 테스트 기기 GAID와 사용자 식별자는 로그/티켓에서 제거합니다. 개발 중 `setLogLevel('verbose')`로 확인하고 배포 설정은 `error` 등 적절한 수준으로 낮추세요.
 
-The AppLovin adapter requires API 24, Google Ad Manager and Naver Ad Manager require 23. Raise the
-app's `minSdkVersion` or drop that adapter from `napSsp.mediations`.
-
-### `pod install` fails on the Teads subspec
-
-`AdMixerMediationTeads` requires **Xcode 26 or newer**. Remove `pod 'NapSspPlugin/Teads'` if you
-are on an older toolchain.
-
-### `Duplicate class com.google.android.gms.ads...`
-
-You already ship the Google Mobile Ads SDK. Exclude it from the adapter:
-
-```groovy
-implementation("io.github.nasmedia-tech:admixer-admanager:2.2.1") {
-    exclude group: "com.google.android.gms", module: "play-services-ads"
-}
-```
-
-Keep `play-services-ads` at 25.2.0 or below — 25.3.0+ is incompatible.
-
----
-
-## Runtime
-
-### No ads at all
-
-1. Confirm `await NapSspAd.initialize(...)` **resolved** — every ad call rejects with
-   `nap_ssp_not_initialized` until it does.
-2. `NapSspAd.setLogLevel('verbose')`, then `adb logcat | grep AdMixerSDK`.
-3. Check the media key and ad unit IDs against the partner site. Both must be numeric.
-4. Confirm the ad unit is enabled and provisioned on the partner site.
-
-### Everything returns `nap_ssp_no_ads`
-
-That is the waterfall reporting no fill — every network was tried and none had inventory. It is
-also the code you get when the ad unit has no networks assigned. Check the ad unit's configuration
-first, then retry after a delay.
-
-Do not branch on `AX_ERR_NO_FILL`: the SDK never sends it, so that branch never runs.
-
-### It used to work in debug and now reports failures
-
-Versions up to 0.4.x replaced the SDK with a simulation in debug builds and reported load failures
-as successes. 0.5.0 removed that. The failures you see now were always happening — they were being
-hidden. See the [migration notes](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/MIGRATION.md#placeholder-simulation-is-gone).
-
-### One network never serves
-
-Look for these in the log:
-
-| Log line | Cause |
-| :--- | :--- |
-| `[SKIP] configuration is invalid (Missing Keys).` | A required key is missing. Pangle needs `placement_id` (and `app_id` if its SDK is not yet started); AppLovin needs `zone_id`. |
-| `[SKIP] Adapter instantiation failed for:` | The adapter module is not in the build — add it to `napSsp.mediations`. |
-
-You can inject a missing key yourself; the server value always wins:
-
-```ts
-await NapSspAd.initialize({
-  mediaKey, adUnitIds,
-  mediations: {
-    pangle: {appId: 'YOUR_PANGLE_APP_ID'},
-    appLovin: {sdkKey: 'YOUR_APPLOVIN_SDK_KEY'},
-  },
-});
-```
-
-### The banner is invisible or clipped
-
-The served size comes from the ad unit's server configuration, not from the `size` prop. Give the
-container a full width and let the height follow the creative; do not lock a height that disagrees
-with the served size.
-
-### `nap_ssp_activity_required`
-
-Android full-screen ads need a foreground Activity. Do not call `show()` from a background task or
-while the app is backgrounded.
-
-### `nap_ssp_view_not_linked` / `napssp_sdk_not_linked`
-
-The native side is not in the build. Rebuild the app after installing the package — Metro's cache
-alone is not enough. On iOS, run `pod install` again.
-
-### Rewarded ads pay out twice / not at all
-
-Grant from the `rewarded` event only, and deduplicate on `transactionId`. Do not also grant from
-`completed` — playback completion and reward accrual are separate signals, and `completed` can fire
-without a reward.
-
-### `skipped` never fires on iOS
-
-Correct, and not fixable from this plugin: `AMMRewardVideoDelegate` and
-`AMMVideoInterstitialDelegate` have no skip callback. Android delivers it through
-`AdListener.onAdSkipped()`. Do not build reward logic on `skipped`.
-
----
-
-## Privacy & compliance
-
-### Is my app child-directed?
-
-If it targets children, Google Play's Families policy requires the flag regardless of country:
-
-```ts
-await NapSspAd.initialize({
-  mediaKey, adUnitIds,
-  privacy: {childDirected: true},
-});
-```
-
-Consequences, by design: **AppLovin is skipped entirely** (their policy forbids SDK use for child
-users), **Pangle is downgraded** to non-personalised (their COPPA API was removed — a mitigation,
-not compliance), and Google Ad Manager / Naver Ad Manager / AdFit / Unity Ads receive the flag.
-
-Unity Ads also needs the app-level age setting in the Unity Monetization dashboard.
-
-### Why call `setPrivacyConsent()` before `initialize()`?
-
-AppLovin, Unity Ads and Pangle read consent when their SDK starts, which happens lazily inside the
-waterfall. Pass `privacy` to `initialize()` so the value is in place first. A later change may not
-take effect until the next app launch.
-
-### `childDirected: false` vs. not setting it
-
-They are different states. Unset leaves each network's own default (or a value an IAB TCF CMP
-wrote) untouched. Once you have set `true`, switch back with an explicit `false` — Unity's metadata
-API has no clear operation, so unsetting cannot undo it.
-
-### GDPR / CCPA
-
-`gdprConsent`, `ccpaDoNotSell` and `usPrivacy` are propagated where a network exposes an API.
-Collecting consent is your responsibility — the SDK does not present a CMP. If you use an IAB TCF
-CMP, Google, Pangle, Teads and Naver read the stored strings directly, independently of these
-settings.
-
-### ATT on iOS
-
-The SDK does not prompt. Your app calls `NapSspAd.requestTrackingAuthorization()` and waits for the
-result before the first ad request. Add `NSUserTrackingUsageDescription` to `Info.plist`.
-
----
-
-## Testing
-
-### How do I get test ads?
-
-Android only:
-
-```ts
-await NapSspAd.setTestMode(true);
-await NapSspAd.setTestDeviceIds(['YOUR-GAID']);
-```
-
-Test device IDs are Google Advertising IDs — sensitive identifiers. Keep them out of logs, tickets
-and support mail.
-
-iOS has no global test switch; register test devices in each network's own dashboard. `setTestMode()`
-resolves `false` there so you can branch on it.
-
-### Can I run the example app without real ad units?
-
-It will run, but every request will fail with `nap_ssp_no_ads` or `nap_ssp_config_failed` — which is
-exactly what the event log is for. Replace `adConfig.ts` with your own IDs to see fills.
-
----
-
-## Compatibility
-
-### Does this support the New Architecture?
-
-**Not verified, and therefore not claimed.** The plugin ships legacy `ReactPackage` modules and
-`SimpleViewManager` views. React Native's interop layer is expected to handle them, but no build or
-runtime check has been run against Fabric/TurboModules. The example app pins
-`newArchEnabled=false` for that reason. If you need New Architecture support, test it in your own
-app before shipping.
-
-### Does it work with Expo?
-
-Only with a development build or a prebuild — it contains native code, so Expo Go cannot load it.
-Add it as a plugin-free native dependency and run `expo prebuild`.
-
-### Which React Native versions?
-
-0.76 and newer (`compileSdk 35` is required by the native SDK). 0.81+ needs no extra Kotlin
-configuration; 0.76–0.80 need `kotlinVersion = "2.1.21"`.
+이번 문서 정비에서 Android 전체 네이티브 빌드, iOS Xcode 빌드, 모든 어댑터 조합 및 실광고 수신은 검증하지 않았습니다.

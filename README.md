@@ -11,6 +11,13 @@
 | [버전 정보](VERSION_MATRIX.md) | SDK와 플러그인 버전 |
 | [마이그레이션](MIGRATION_GUIDE.md) | 릴리스별 변경 사항 |
 | [문제 해결](TROUBLESHOOTING.md) | 빌드 및 런타임 문제 |
+| [미디에이션](MEDIATION_GUIDE.md) | 네트워크 선택, 키와 서버 설정 구분 |
+| [개인정보](PRIVACY_GUIDE.md) | privacy 삼상태와 초기화 전 동의 전달 |
+| [네이티브 asset](NATIVE_ASSETS_GUIDE.md) | Android XML, iOS XIB 커스텀 레이아웃 |
+| [고급 사용](ADVANCED_USAGE.md) | load/show/reload, 이벤트, cleanup |
+| [FAQ](FAQ.md) | 도입과 운영 관련 질문 |
+| [용어집](GLOSSARY.md) | 키, waterfall, fill, ATT 등 주요 용어 |
+| [Expo](EXPO_GUIDE.md) / [SPM](SPM_GUIDE.md) | 지원 범위와 검증 제한 |
 
 0.6.0은 Android Core 2.5.1과 iOS Mediation 2.6.1 이상을 사용합니다. 어댑터는 필요한 것만 선택 설치합니다. iOS React Native 브리지는 CocoaPods를 사용합니다.
 

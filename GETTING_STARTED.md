@@ -1,240 +1,58 @@
-> 이 문서는 플러그인 저장소의 최신 가이드와 동기화했습니다.
+# 시작하기
 
-# react-native-nap-ssp
+플러그인 0.6.0은 React Native 0.76 이상을 기준으로 합니다. Android는 compileSdk 35 이상, iOS는 deployment target 14.0 이상이 필요합니다. Kotlin은 플러그인 기본값 2.1.21이며 실제 호스트 설정과 의존성 호환성을 확인해야 합니다. 네트워크별 추가 조건은 [Android](ANDROID_SETUP.md) 및 [iOS](IOS_SETUP.md)에서 확인하세요.
 
-[![npm version](https://img.shields.io/npm/v/react-native-nap-ssp.svg?style=flat-square)](https://www.npmjs.com/package/react-native-nap-ssp)
-[![Android SDK](https://img.shields.io/badge/Android%20SDK-2.5.1-brightgreen.svg?style=flat-square)](https://napmx.github.io/#/android/)
-[![iOS SDK](https://img.shields.io/badge/iOS%20SDK-2.6.1-brightgreen.svg?style=flat-square)](https://napmx.github.io/#/ios/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/LICENSE)
+## 1. 발급받을 값
 
-React Native bridge for **nap mx** (KT Nasmedia's AdMixer SSP) — banner, native, inline video,
-interstitial, interstitial video and rewarded video, with the mediation waterfall handled by the
-native SDK.
+파트너 사이트에서 앱을 등록하고 앱별 숫자 `mediaKey`와 광고 형식별 숫자 `adUnitId`를 발급받으세요. 문자열 형태로 전달하되 예제 ID를 실제 서비스 키로 사용하지 마세요. 배너와 전면 광고 등 서로 다른 형식은 해당 형식으로 생성된 광고 단위를 사용합니다.
 
-Official native guides: [Android](https://napmx.github.io/#/android/) · [iOS](https://napmx.github.io/#/ios/)
-
----
-
-## What's new in 0.6.0
-
-* **Native SDK update** — Android core `2.5.1` (BOM `2026.11.02`); iOS Mediation `2.6.1` or newer in the 2.x series with Core `1.5.1` or newer.
-* **iOS installation changes** — adapters are explicitly opt-in; install the React Native bridge with CocoaPods. The unsupported standalone SPM manifest was removed.
-* Android SDK error numbers changed; rebuild the app and use the documented string error codes.
-
-## What's new in 0.5.0
-
-0.5.0 is a correctness release. If you are on 0.4.x, read the
-[migration notes](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/MIGRATION.md) — there are breaking changes.
-
-* **Placeholder simulation is gone.** Earlier versions replaced the real SDK with fake events in
-  debug builds and reported load failures as successes. Every build now takes the real SDK path and
-  failures surface as failures.
-* **Privacy signals actually reach the SDK.** `setCoppa()` only ever stored a local flag. There is
-  now a real `setPrivacyConsent()` (COPPA / GDPR / CCPA) wired to
-  `AdMixer.setTagForChildDirectedTreatment` on Android and `AMMConsent` on iOS.
-* **Test mode** — `setTestMode()` / `setTestDeviceIds()` (Android; the iOS SDK has no equivalent).
-* **Native SDKs refreshed** — Android core `2.1.3 → 2.3.0` (BOM `2026.09.03`), iOS `2.4.2 → 2.5.0`.
-* **Kotlin 2.1+ is now required** in the host app — see [Setup](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md#kotlin-요구사항).
-
-Full details in the [CHANGELOG](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/CHANGELOG.md).
-
----
-
-## Documentation
-
-| Guide | Contents |
-| :--- | :--- |
-| 🚀 **[Setup](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/SETUP.md)** | Install, Android Gradle & mediation adapters, iOS CocoaPods, Kotlin and minSdk requirements, ATT. |
-| 📖 **[API reference](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md)** | Every export, option, event and error code. |
-| 🔄 **[Migration](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/MIGRATION.md)** | 0.4.x → 0.5.0 upgrade steps and the verified version matrix. |
-| ❓ **[FAQ](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/FAQ.md)** | Build and runtime troubleshooting, privacy compliance, known platform gaps. |
-
-A runnable integration reference lives in [`example/ExampleHostApp`](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/example) — it exercises
-initialize → load → callback → show → reload → cleanup for all six formats with a live event log.
-
----
-
-## Quick start
-
-### 1. Install
+## 2. 설치와 네이티브 재빌드
 
 ```bash
 npm install react-native-nap-ssp
 ```
 
-**Android** — pick the mediation adapters you sell, in `android/gradle.properties`:
+[미디에이션 선택](MEDIATION_GUIDE.md) 후 Android 저장소 또는 iOS Pods를 설정하고 앱을 다시 빌드합니다. Expo Go에는 이 네이티브 모듈이 포함되어 있지 않습니다. [Expo 환경](EXPO_GUIDE.md)
 
-```properties
-# comma separated, or "all". Unset links the nap mx core SDK only.
-napSsp.mediations=admanager,adfit
-```
+## 3. 초기화 완료 후 광고 마운트
 
-and make sure the app builds with Kotlin 2.1 or newer (React Native 0.79+ already does). On older
-React Native, set it in the top-level `android/build.gradle`:
-
-```groovy
-buildscript {
-    ext {
-        kotlinVersion = "2.1.21"
-    }
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    }
-}
-```
-
-**iOS** — add the subspecs for the adapters you use, then install:
-
-```ruby
-# ios/Podfile
-pod 'NapSspPlugin/GAM'
-pod 'NapSspPlugin/AdFit'
-```
-
-```bash
-cd ios && pod install
-```
-
-### 2. Initialize
-
-Call this once, before requesting any ad. Every ad unit you will use must be registered here, and
-privacy signals belong in this call — several networks read consent only when they start up.
+동의 흐름에서 결정한 privacy와 필요한 iOS ATT 처리를 먼저 마친 뒤 초기화합니다. 아래 함수에 앱의 부팅 흐름에서 확정한 값을 전달하세요. `initialize`가 완료되기 전에 광고 화면을 렌더링하면 자동 광고 요청과 초기화가 경쟁합니다.
 
 ```tsx
-import React, {useEffect} from 'react';
-import {Platform} from 'react-native';
-import {NapSspAd} from 'react-native-nap-ssp';
+import React, {useEffect, useState} from 'react';
+import {Text} from 'react-native';
+import {BannerAd, NapSspAd, type NapSspConfig} from 'react-native-nap-ssp';
 
-export default function App() {
+// 앱 부팅 시 한 번 생성한 동일한 Promise를 화면들에서 공유합니다.
+let startup: Promise<unknown> | undefined;
+function startAds(config: NapSspConfig) {
+  return (startup ??= NapSspAd.initialize(config));
+}
+
+export function AdScreen({config}: {config: NapSspConfig}) {
+  const [phase, setPhase] = useState('loading');
   useEffect(() => {
-    (async () => {
-      // iOS: resolve tracking permission before the first ad request.
-      if (Platform.OS === 'ios') {
-        await NapSspAd.requestTrackingAuthorization();
-      }
-
-      await NapSspAd.initialize({
-        mediaKey: '10771',
-        adUnitIds: ['104701', '104703', '103722'],
-        logLevel: __DEV__ ? 'verbose' : 'error',
-        privacy: {childDirected: false},
-        testMode: __DEV__, // Android only
-      });
-    })().catch((error) => console.warn('nap mx init failed', error));
-  }, []);
-
-  return <YourAppRoot />;
-}
-```
-
-> `mediaKey` and `adUnitIds` are the **numeric** values issued on the
-> [partner site](https://publisher.admixer.co.kr). One media key per app.
-
-### 3. Show a banner
-
-The served size comes from the ad unit's server configuration; `size` is only a layout hint.
-
-```tsx
-import {useRef} from 'react';
-import {BannerAd, type AdViewHandle} from 'react-native-nap-ssp';
-
-function Footer() {
-  const bannerRef = useRef<AdViewHandle>(null);
-
-  return (
-    <BannerAd
-      ref={bannerRef}
-      adUnitId="104701"
-      size="BANNER_320x50"
-      onAdLoaded={() => console.log('banner loaded')}
-      onAdFailedToLoad={(error) => console.warn(error.code, error.message)}
-    />
-  );
-  // bannerRef.current?.reload() requests a fresh ad.
-}
-```
-
-### 4. Load and show an interstitial
-
-```tsx
-import {useEffect, useRef} from 'react';
-import {Button} from 'react-native';
-import {InterstitialAd} from 'react-native-nap-ssp';
-
-function GameScreen() {
-  const adRef = useRef<InterstitialAd>();
-
-  useEffect(() => {
-    const ad = new InterstitialAd('104703');
-    adRef.current = ad;
-
-    const unsubscribe = ad.addAdEventListener('loadFailed', (error) =>
-      console.warn(error.code, error.message),
+    let active = true;
+    startAds(config).then(
+      () => { if (active) setPhase('ready'); },
+      () => { if (active) setPhase('failed'); },
     );
+    return () => { active = false; };
+  }, [config]);
 
-    ad.load().catch((error) => console.warn('load rejected', error.code));
-
-    return () => {
-      unsubscribe();
-      ad.destroy(); // cancels an in-flight load and releases the native ad
-    };
-  }, []);
-
-  return <Button title="Show ad" onPress={() => adRef.current?.show()} />;
+  if (phase === 'failed') return <Text>광고 초기화에 실패했습니다.</Text>;
+  if (phase !== 'ready') return null;
+  return <BannerAd adUnitId={config.adUnitIds[0]} size="BANNER_320x50"
+    onAdFailedToLoad={error => console.warn(error.code, error.message)} />;
 }
 ```
 
-`load()` resolves when the SDK reports a fill and rejects with an [`AdError`](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#aderror)
-when the whole waterfall fails. Event names are the short form — `loaded`, `loadFailed`, `opened`,
-`closed`, `clicked`, `impression`, `rewarded`, `completed`, `skipped`.
+`config`에는 앱 부팅에서 안정적으로 생성한 `mediaKey`, 배너 ID를 첫 항목으로 포함한 `adUnitIds`, 동의 결과 `privacy`를 전달합니다. 위 예제는 초기화 실패 시 자동 재시도하지 않습니다. 재시도 정책이 필요하면 앱 부팅 계층에서 실패 상태와 공유 Promise를 함께 관리하세요. [초기화 옵션](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#napsspad) · [개인정보 값](PRIVACY_GUIDE.md)
 
-### 5. Reward a user
+`size`는 레이아웃 힌트이며 실제 광고 크기는 서버의 광고 단위 설정으로 결정됩니다. 배너 reload, 전면 광고와 보상 광고 생명주기는 [고급 사용](ADVANCED_USAGE.md)을 참고하세요.
 
-Grant the reward from the `rewarded` event and reconcile it with your server using
-`transactionId`, which matches `transaction_id` on the S2S reward callback.
+## 4. 확인
 
-```tsx
-const ad = new RewardedAd('103722', {customParams: {userId}});
-ad.addAdEventListener('rewarded', ({transactionId}) => grantReward(userId, transactionId));
-await ad.load();
-await ad.show();
-```
+초기화 성공과 광고 fill 성공은 별개입니다. 발급 ID, 서버 수요, 네트워크 설정을 확인하고 실패 콜백의 `code`와 `message`를 기록하세요. 디버그에서도 실제 SDK를 사용하며 실패를 성공으로 바꾸지 않습니다. Android 테스트 모드는 iOS에 적용되지 않습니다. [FAQ](FAQ.md) · [실행 가능한 예제](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/example/ExampleHostApp)
 
----
-
-## Supported formats
-
-| Format | Export | Android | iOS |
-| :--- | :--- | :---: | :---: |
-| Banner | `BannerAd` | ✅ | ✅ |
-| Native | `NativeAd` | ✅ | ✅ |
-| Inline video | `VideoAd` | ✅ | ✅ |
-| Interstitial | `InterstitialAd` | ✅ | ✅ |
-| Interstitial video | `InterstitialVideoAd` | ✅ | ✅ |
-| Rewarded video | `RewardedAd` | ✅ | ✅ |
-
-**Mediation networks**: Google Ad Manager, Kakao AdFit, Pangle, AppLovin, Unity Ads,
-Naver Ad Manager, Teads.
-
-### Known platform differences
-
-| Behaviour | Android | iOS |
-| :--- | :--- | :--- |
-| `skipped` event (rewarded, interstitial video) | ✅ | ❌ — the iOS delegates have no skip callback |
-| `setTestMode()` / `setTestDeviceIds()` | ✅ | ❌ — resolves `false`; register test devices per network |
-| `privacy.usPrivacy` (IAB US Privacy string) | ✅ | ❌ |
-| `privacy.underAgeOfConsent` | ❌ | ✅ |
-| `InterstitialAdOptions.disableBackKey` | ✅ | n/a |
-| `RewardedAdOptions.mute`, `InterstitialVideoAdOptions.timeout` | ✅ | ❌ |
-
-### Not supported
-
-The New Architecture (TurboModules/Fabric) has **not** been verified against this plugin. It ships
-legacy `ReactPackage` modules and `SimpleViewManager` views, which the interop layer is expected to
-handle, but no build or runtime check has been run — so it is not claimed as supported.
-
----
-
-## License
-
-[MIT](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/LICENSE)
+이번 문서 정비에서는 Android 전체 네이티브 빌드, iOS Xcode 빌드 및 실광고 수신을 검증하지 않았습니다.
