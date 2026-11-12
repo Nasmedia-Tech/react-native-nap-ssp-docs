@@ -1,187 +1,308 @@
-# 🤖 Android 설정 가이드
+> 이 문서는 플러그인 저장소의 최신 가이드와 동기화했습니다.
 
-![Android](https://img.shields.io/badge/Android-minSdk%2021-brightgreen)
-![SDK](https://img.shields.io/badge/admixer--ssp-1.0.23-blue)
-![JDK](https://img.shields.io/badge/JDK-17-orange)
+# Setup
 
-`react-native-nap-ssp` 플러그인의 Android 설정 상세 가이드입니다.
+Install and configure `react-native-nap-ssp` on both platforms.
 
----
-
-## 목차
-
-1. [Maven 리포지토리 설정](#1-maven-리포지토리-설정)
-2. [의존성 추가](#2-의존성-추가)
-3. [AndroidManifest.xml 설정](#3-androidmanifestxml-설정)
-4. [ProGuard / R8 설정](#4-proguard--r8-설정)
-5. [SDK 초기화 및 어댑터 등록](#5-sdk-초기화-및-어댑터-등록)
-6. [의존성 중복 처리](#6-의존성-중복-처리)
+Everything here mirrors the official nap mx guides —
+[Android](https://napmx.github.io/#/android/native/getting-started) ·
+[iOS](https://napmx.github.io/#/ios/native/getting-started). Where this plugin adds a requirement of
+its own it is called out explicitly.
 
 ---
 
-## 1. Maven 리포지토리 설정
+## 1. Prerequisites
 
-`android/build.gradle` (프로젝트 루트 레벨)에 추가합니다.
+Sign up on the [partner site](https://publisher.admixer.co.kr), register your media and create ad
+units. You will get a numeric **media key** (one per app) and a numeric **ad unit ID** per format.
 
-```gradle
-allprojects {
+Some networks need a key issued by the nap mx team — contact
+[nap_mx@nasmedia.co.kr](mailto:nap_mx@nasmedia.co.kr) for Google App ID, Pangle App ID and
+Unity Ads App ID.
+
+---
+
+## 2. Install the package
+
+```bash
+npm install react-native-nap-ssp
+# or
+yarn add react-native-nap-ssp
+```
+
+Autolinking picks the plugin up on both platforms. No manual registration is needed.
+
+| Requirement | Version |
+| :--- | :--- |
+| React Native | 0.72 or newer |
+| React | 18.2 or newer |
+| Android `minSdk` | 21 (higher for some adapters — see below) |
+| Android Kotlin | **2.1 or newer** (see [Kotlin 요구사항](#kotlin-요구사항)) |
+| iOS deployment target | 14.0 |
+| Xcode | 16+ (26+ when using the Teads adapter) |
+
+---
+
+## 3. Android
+
+### 3-1. Choose mediation adapters
+
+The nap mx core SDK is always linked. Adapters are opt-in, because each one pulls in a third-party
+network SDK (and sometimes an extra Maven repository).
+
+```properties
+# android/gradle.properties
+
+# Comma separated. Supported: admanager, adfit, pangle, applovin, unity, naveradmanager, teads
+napSsp.mediations=admanager,adfit
+
+# Or link every adapter:
+# napSsp.mediations=all
+```
+
+Leaving the property unset links **the core SDK only** — your waterfall will then serve AdMixer and
+house ads but no third-party demand.
+
+> **Upgrading from 0.4.x:** `napSsp.enableVendorSdk` was removed. If your build previously set it to
+> `true` without `napSsp.mediations`, every adapter was linked; set `napSsp.mediations=all` to keep
+> that behaviour, or list only the networks you actually sell.
+
+### 3-2. Declare the adapter Maven repositories — required
+
+AdFit, Pangle and Teads pull network SDKs that are not on Maven Central. **These repositories have
+to be declared in your app**, not in the plugin: Gradle resolves a library's transitive dependencies
+using the consuming project's repositories.
+
+```groovy
+// android/settings.gradle
+dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' } // Kakao AdFit
-        maven { url "https://artifact.bytedance.com/repository/pangle/" }      // Pangle
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }   // AdFit
+        maven { url 'https://artifact.bytedance.com/repository/pangle/' }         // Pangle
+        maven { url 'https://sdk.teads.tv/android/repo' }                         // Teads
+        maven { url 'https://teads.jfrog.io/artifactory/SDKAndroid-maven-prod' }  // Teads
+        maven { url 'https://developer.huawei.com/repo/' }                        // Teads: Huawei devices
     }
 }
 ```
 
----
+Skip this and the build fails with `Could not find tv.teads.sdk.android:sdk` (or the Kakao/Pangle
+equivalent). The Gradle build prints the exact list for the adapters you enabled.
 
-## 2. 의존성 추가
+Google Ad Manager, AppLovin, Unity Ads and Naver Ad Manager resolve from `google()` and
+`mavenCentral()` alone.
 
-`android/app/build.gradle` (앱 레벨)의 `dependencies` 블록에 추가합니다.
+### 3-3. Kotlin 요구사항
 
-### 필수 의존성
+**The host app must build with Kotlin 2.1 or newer.**
 
-```gradle
-dependencies {
-    implementation 'io.github.nasmedia-tech:admixer-ssp:1.0.23'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.9.0'
+nap mx core `admixer-ssp:2.5.1` ships `kotlin-stdlib:2.2.10`, whose metadata version is 2.2.0. A
+Kotlin 2.0 or older compiler cannot read it and the build fails with:
+
+```
+Class 'kotlin.Unit' was compiled with an incompatible version of Kotlin.
+The actual metadata version is 2.2.0, but the compiler version 2.0.21 can read versions up to 2.1.0.
+```
+
+| React Native | Default Kotlin | Action |
+| :--- | :--- | :--- |
+| 0.79 and newer | 2.1.x | nothing to do |
+| 0.72 – 0.78 | 1.8 – 2.0 | pin Kotlin 2.1+ as below |
+
+```groovy
+// android/build.gradle (top level)
+buildscript {
+    ext {
+        kotlinVersion = "2.1.21"
+        // ...existing ext values
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
 }
 ```
 
-### 미디에이션 어댑터 (선택 — 사용할 네트워크만 추가)
+The plugin's own Kotlin version can be overridden with `napSsp.kotlinVersion` if you need to.
 
-```gradle
-dependencies {
-    implementation 'io.github.nasmedia-tech:admixer-admanager:1.0.15_delta'  // Google AdManager
-    implementation 'io.github.nasmedia-tech:admixer-adfit:1.0.12_beta'        // Kakao AdFit
-    implementation 'io.github.nasmedia-tech:admixer-pangle:1.0.12_beta'       // Pangle
-    implementation 'com.pangle.global:pag-sdk:7.7.0.2'                        // Pangle 사용 시 필수
-    implementation 'io.github.nasmedia-tech:admixer-applovin:1.0.10_beta'     // AppLovin
-    implementation 'io.github.nasmedia-tech:admixer-unity:1.0.7_beta'         // Unity Ads
-    implementation 'io.github.nasmedia-tech:admixer-mobwith:1.0.0'            // Mobwith (선택)
-}
-```
+The plugin compiles Java and Kotlin at **17** by default, matching React Native's JDK requirement.
+If your app compiles its modules at a different level, align the plugin with
+`napSsp.javaVersion=11` — a mismatch fails the build with
+`Inconsistent JVM-target compatibility detected`.
 
-### 빌드 환경 요구사항
+### 3-4. minSdk per network
 
-| 항목 | 최솟값 |
+The core SDK targets API 21, but some adapters require more. Your app's `minSdkVersion` must be at
+least the highest value among the adapters you enable.
+
+| Network | Minimum Android API |
 | :--- | :--- |
-| minSdk | 21 (Android 5.0) |
-| compileSdk / targetSdk | 34 이상 권장 |
-| JDK | 17 |
+| AdMixer core, Kakao AdFit, Pangle, Unity Ads, Teads | 21 (Android 5.0) |
+| Google Ad Manager, Naver Ad Manager | 23 (Android 6.0) |
+| AppLovin | 24 (Android 7.0) |
 
-> ⚠️ JDK 버전이 17이 아닌 경우 `Unsupported class file major version` 오류가 발생합니다.
+### 3-5. Manifest
 
----
-
-## 3. AndroidManifest.xml 설정
-
-`android/app/src/main/AndroidManifest.xml`에 추가합니다.
-
-### 필수 권한
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-```
-
-### Google AdManager 사용 시 (Application 태그 내부)
+Add the Google App ID when you enable the `admanager` adapter:
 
 ```xml
 <meta-data
     android:name="com.google.android.gms.ads.APPLICATION_ID"
-    android:value="[nap ssp로부터 발급받은 Google App ID]" />
+    android:value="YOUR_GOOGLE_APP_ID" />
 ```
 
-> 💡 Google App ID는 나스미디어 담당자(nap_adx@nasmedia.co.kr)에게 문의하세요.
+Naver Ad Manager needs nothing — its `PUBLISHER_CD` ships inside the adapter AAR. Do **not** declare
+it yourself.
 
----
+If your app declares its own `android:networkSecurityConfig`, add `tools:replace` so yours wins over
+the one the core SDK merges in:
 
-## 4. ProGuard / R8 설정
-
-릴리즈 빌드 시 클래스가 난독화되어 광고가 표시되지 않는 문제를 방지합니다.  
-`android/app/proguard-rules.pro`에 추가하세요.
-
-```proguard
-# Nap SSP Core
--keep class com.nasmedia.admixerssp.** { *; }
-
-# Mediation Adapters
--keep class com.nasmedia.admanager.**  { *; }
--keep class com.nasmedia.adfit.**      { *; }
-
-# Pangle (실제 SDK 패키지)
--keep class com.pangle.**              { *; }
--dontwarn com.pangle.**
-
-# AppLovin (실제 SDK 패키지)
--keep class com.applovin.**            { *; }
--dontwarn com.applovin.**
-
-# Google Ads
--keep class com.google.android.gms.ads.** { *; }
-
-# RN Plugin Bridge
--keep class com.gwangy.NapSsp** { *; }
+```xml
+<application
+    android:networkSecurityConfig="@xml/your_network_security_config"
+    tools:replace="android:networkSecurityConfig">
 ```
 
-> ⚠️ 이 설정 없이 릴리즈 빌드를 배포하면 광고가 노출되지 않습니다.
+### 3-6. Google Ad Manager version ceiling
 
----
+`play-services-ads` must stay at **25.2.0 or below** — 25.3.0+ is incompatible. If another
+dependency pulls a newer version:
 
-## 5. SDK 초기화 및 어댑터 등록
-
-`react-native-nap-ssp`를 사용할 때는 JS 레이어의 `NapSspAd.initialize()`가 네이티브 초기화를 처리합니다.  
-단, **미디에이션 어댑터는 네이티브에서 등록**해야 합니다.
-
-`android/app/src/main/java/com/yourapp/MainApplication.kt` (또는 `.java`)에 추가하세요.
-
-```kotlin
-import com.nasmedia.admixerssp.common.AdMixer
-import com.nasmedia.admixerssp.common.AdMixerLog
-
-class MainApplication : Application(), ReactApplication {
-    override fun onCreate() {
-        super.onCreate()
-
-        // 개발 중 로그 확인 (운영 환경에서는 제거 또는 NONE으로 변경)
-        AdMixerLog.setLogLevel(AdMixerLog.LogLevel.VERBOSE)
-
-        // 사용할 미디에이션 어댑터 등록 (사용하는 네트워크만 포함)
-        AdMixer.registerAdapter(AdMixer.ADAPTER_ADMANAGER)  // Google AdManager
-        AdMixer.registerAdapter(AdMixer.ADAPTER_ADFIT)      // Kakao AdFit
-        AdMixer.registerAdapter(AdMixer.ADAPTER_PANGLE)     // Pangle
-        AdMixer.registerAdapter(AdMixer.ADAPTER_APPLOVIN)   // AppLovin
-        AdMixer.registerAdapter(AdMixer.ADAPTER_UNITY)      // Unity Ads
-        AdMixer.registerAdapter(AdMixer.ADAPTER_MOBWITH)    // Mobwith (선택)
+```groovy
+configurations.all {
+    resolutionStrategy {
+        force 'com.google.android.gms:play-services-ads:25.2.0'
     }
 }
 ```
 
-> 💡 `NapSspAd.initialize()`는 앱 실행 시 `AdMixer.getInstance().initialize()`를 내부적으로 호출합니다.  
-> `registerAdapter()`는 그 이전에 호출되어야 합니다.
+### 3-7. ProGuard / R8
+
+Nothing to do. The core SDK, each adapter and this plugin all ship `consumer-rules.pro`, which
+Gradle merges into your release build automatically.
+
+### 3-8. Customising the native ad layout
+
+`NativeAd` renders the creative into `res/layout/nap_ssp_native_ad.xml`. To restyle it, ship a layout
+with the same file name and the same view IDs (`nap_mx_iv_icon`, `nap_mx_tv_title`,
+`nap_mx_tv_adv`, `nap_mx_tv_desc`, `nap_mx_iv_main`, `nap_mx_btn_cta`) in your app module — it wins
+over the plugin's copy at merge time.
 
 ---
 
-## 6. 의존성 중복 처리
+## 4. iOS
 
-다른 광고 SDK와 함께 사용 중이어서 라이브러리 버전 충돌이 발생하는 경우, `exclude`로 해결합니다.
+### 4-1. CocoaPods
 
-```gradle
-dependencies {
-    implementation("io.github.nasmedia-tech:admixer-admanager:1.0.14") {
-        exclude group: "com.google.android.gms", module: "play-services-ads"
-    }
-    implementation("io.github.nasmedia-tech:admixer-adfit:1.0.10") {
-        exclude group: "com.kakao.adfit", module: "ads-base"
-    }
+Autolinking adds the base pod. Add a subspec per adapter you use. CocoaPods AdFit uses the 1.1.x
+adapter; its 2.x releases are SPM-only and require iOS 15 or later:
+
+```ruby
+# ios/Podfile
+target 'YourApp' do
+  use_frameworks!
+
+  pod 'NapSspPlugin/GAM'        # Google Ad Manager
+  pod 'NapSspPlugin/AdFit'      # Kakao AdFit
+  pod 'NapSspPlugin/Pangle'
+  pod 'NapSspPlugin/AppLovin'
+  pod 'NapSspPlugin/UnityAds'
+  pod 'NapSspPlugin/NAM'        # Naver Ad Manager
+  pod 'NapSspPlugin/Teads'      # requires Xcode 26+
+end
+```
+
+```bash
+cd ios && pod install --repo-update
+```
+
+### 4-2. Swift Package Manager
+
+The React Native plugin is installed through CocoaPods. Standalone Swift Package Manager
+integration of this React Native bridge is not currently supported. The native SDK itself offers
+SPM packages; see the [official guide](https://napmx.github.io/#/ios/native/getting-started).
+
+### 4-3. App Tracking Transparency
+
+Add a purpose string to `Info.plist`:
+
+```xml
+<key>NSUserTrackingUsageDescription</key>
+<string>Used to deliver more relevant ads.</string>
+```
+
+The SDK does not prompt — your app does, and it should resolve before the first ad request:
+
+```tsx
+if (Platform.OS === 'ios') {
+  const status = await NapSspAd.requestTrackingAuthorization();
+  // 'authorized' | 'denied' | 'restricted' | 'notDetermined' | 'unavailable'
 }
 ```
 
+### 4-4. Google Ad Manager
+
+```xml
+<key>GADApplicationIdentifier</key>
+<string>YOUR_GAD_APP_ID</string>
+```
+
+The plugin calls `MobileAds.shared.start()` during `initialize()` only when this key is present.
+
+### 4-5. Customising the native ad layout
+
+`NativeAd` looks for an `AMMNativeAdView.xib` in your app bundle first and falls back to a
+programmatic layout. Ship your own xib whose File's Owner is `AMMNativeAdView` and whose outlets
+(`iv_icon`, `l_headline`, `l_advertiser`, `l_description`, `media`, `b_cta`) are connected.
+
 ---
 
-## 문의
+## 5. Initialize
 
-**nap_adx@nasmedia.co.kr**
+```tsx
+await NapSspAd.initialize({
+  mediaKey: '10771',
+  adUnitIds: ['104701', '104588', '104591', '104703', '103722'],
+  logLevel: __DEV__ ? 'verbose' : 'error',
+  privacy: {childDirected: false},
+  testMode: __DEV__,
+  mediations: {
+    // Only needed when the media-conf server does not deliver the key itself.
+    pangle: {appId: 'YOUR_PANGLE_APP_ID'},
+    appLovin: {sdkKey: 'YOUR_APPLOVIN_SDK_KEY'},
+    unityAds: {appId: 'YOUR_UNITY_APP_ID'}, // iOS
+    naverAdManager: {publisherCd: 'YOUR_PUBLISHER_CD'}, // iOS
+  },
+});
+```
+
+`initialize()` must resolve before any ad is requested. It rejects on an invalid config — the
+message names the offending field.
+
+> **Order matters for privacy.** AppLovin, Unity Ads and Pangle read consent when they start up, so
+> pass `privacy` to `initialize()` rather than calling `setPrivacyConsent()` afterwards. See
+> [the official mapping table](https://napmx.github.io/#/android/native/privacy).
+
+---
+
+## 6. Verify the integration
+
+```tsx
+const status = await NapSspAd.getStatus();
+console.log(status.initialized, status.platform, status.privacy, status.testMode);
+```
+
+Android logs are tagged `AdMixerSDK`:
+
+```bash
+adb logcat | grep AdMixerSDK
+```
+
+Set `logLevel: 'verbose'` during development and `'error'` in production.
+
+If a specific network never serves, look for `[SKIP] configuration is invalid (Missing Keys).` or
+`[SKIP] Adapter instantiation failed for:` in the log — the first means a required key is missing,
+the second means the adapter module is not in the build (check `napSsp.mediations`).
