@@ -1,5 +1,7 @@
 # react-native-nap-ssp 연동 문서
 
+> **0.6.0/0.6.1 알려진 실행 문제:** Android 전면형 이벤트가 중복 전달될 수 있고, 같은 광고 단위 ID를 여러 전면 포맷에서 쓰면 다른 포맷의 상태가 바뀔 수 있습니다. iOS 전면형 `isLoading()`도 구현되지 않았습니다. 리워드는 콜백만으로 중복 지급하지 말고 서버 거래 ID로 중복을 막으세요. [상세 및 검증 상태](https://github.com/glenn-yu/NapSspReactNativePluginSample/releases/tag/v0.6.1)
+
 이 저장소는 React Native 플러그인의 현재 가이드로 연결합니다. 최신 소스와 상세 문서는 [플러그인 저장소](https://github.com/glenn-yu/NapSspReactNativePluginSample)에서 관리합니다.
 
 | 문서 | 내용 |
@@ -19,7 +21,7 @@
 | [용어집](GLOSSARY.md) | 키, waterfall, fill, ATT 등 주요 용어 |
 | [Expo](EXPO_GUIDE.md) / [SPM](SPM_GUIDE.md) | 지원 범위와 검증 제한 |
 
-0.6.0은 Android Core 2.5.1과 iOS Mediation 2.6.1 이상을 사용합니다. 어댑터는 필요한 것만 선택 설치합니다. iOS React Native 브리지는 CocoaPods를 사용합니다.
+0.6.0과 0.6.1은 Android Core 2.5.1과 iOS Mediation 2.6.1 이상을 사용합니다. 어댑터는 필요한 것만 선택 설치합니다. iOS React Native 브리지는 CocoaPods를 사용합니다.
 
 광고 로드 실패는 디버그와 릴리스 모두 실패로 전달됩니다. 실광고 연동 예제는 [ExampleHostApp](https://github.com/glenn-yu/NapSspReactNativePluginSample/tree/main/example/ExampleHostApp)을 참고하세요.
 
