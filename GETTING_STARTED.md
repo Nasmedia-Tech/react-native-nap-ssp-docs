@@ -1,6 +1,6 @@
 # 시작하기
 
-플러그인 0.6.0은 React Native 0.76 이상을 기준으로 합니다. Android는 compileSdk 35 이상, iOS는 deployment target 14.0 이상이 필요합니다. Kotlin은 플러그인 기본값 2.1.21이며 실제 호스트 설정과 의존성 호환성을 확인해야 합니다. 네트워크별 추가 조건은 [Android](ANDROID_SETUP.md) 및 [iOS](IOS_SETUP.md)에서 확인하세요.
+플러그인 0.6.2는 React Native 0.76 이상을 기준으로 합니다. Android는 compileSdk 35 이상, iOS는 deployment target 14.0 이상이 필요합니다. Kotlin은 플러그인 기본값 2.1.21이며 실제 호스트 설정과 의존성 호환성을 확인해야 합니다. 네트워크별 추가 조건은 [Android](ANDROID_SETUP.md) 및 [iOS](IOS_SETUP.md)에서 확인하세요.
 
 ## 1. 발급받을 값
 
@@ -55,4 +55,4 @@ export function AdScreen({config}: {config: NapSspConfig}) {
 
 초기화 성공과 광고 fill 성공은 별개입니다. 발급 ID, 서버 수요, 네트워크 설정을 확인하고 실패 콜백의 `code`와 `message`를 기록하세요. 디버그에서도 실제 SDK를 사용하며 실패를 성공으로 바꾸지 않습니다. Android 테스트 모드는 iOS에 적용되지 않습니다. [FAQ](FAQ.md) · [실행 가능한 예제](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/example/ExampleHostApp)
 
-[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 로컬 의존성 다운로드 실패와 CI 성공은 [검증 범위](VERSION_MATRIX.md#빌드-검증-범위)에서 구분합니다.
+[0.6.2 Android CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230196)에서 GAM+AdFit 구성의 라이브러리 빌드가 통과했습니다. [iOS CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230182)는 브리지 소스 포함, GAM+AdFit 시뮬레이터 앱 빌드 및 코어 전용 자동 연결을 확인했습니다. 전체 어댑터와 실기기 광고·보상 흐름은 검증하지 않았습니다. 로컬 의존성 다운로드 실패와 CI 성공은 [검증 범위](VERSION_MATRIX.md#빌드-검증-범위)에서 구분합니다.

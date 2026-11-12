@@ -1,6 +1,6 @@
 # API 레퍼런스 안내
 
-플러그인 0.6.0의 전체 타입과 반환값은 [공식 플러그인 API](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md) 및 설치 패키지의 TypeScript 선언을 기준으로 확인하세요. 이 저장소는 API 전체 사본을 유지하는 대신 필요한 절로 연결합니다.
+플러그인 0.6.2의 전체 타입과 반환값은 [공식 플러그인 API](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md) 및 설치 패키지의 TypeScript 선언을 기준으로 확인하세요. 이 저장소는 API 전체 사본을 유지하는 대신 필요한 절로 연결합니다.
 
 ## 초기화와 설정
 
@@ -26,4 +26,4 @@
 
 `normalizeAdError`는 오류 값을 공통 형태로 변환하는 공개 helper입니다. 모든 네이티브 Promise가 자동으로 동일한 정규화 경로를 거친다고 가정하지 말고 각 API의 실패 처리를 구현하세요. [helper 정의](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/src/errors.ts)
 
-실제 사용 순서는 [시작하기](GETTING_STARTED.md)와 [광고 생명주기](ADVANCED_USAGE.md)에 설명합니다. [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다.
+실제 사용 순서는 [시작하기](GETTING_STARTED.md)와 [광고 생명주기](ADVANCED_USAGE.md)에 설명합니다. [0.6.2 Android CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230196)에서 GAM+AdFit 구성의 라이브러리 빌드가 통과했습니다. [iOS CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230182)는 브리지 소스 포함, GAM+AdFit 시뮬레이터 앱 빌드 및 코어 전용 자동 연결을 확인했습니다. 전체 어댑터와 실기기 광고·보상 흐름은 검증하지 않았습니다.

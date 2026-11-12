@@ -17,4 +17,4 @@
 | native ad | SDK의 소재 asset을 앱 네이티브 레이아웃에 배치하는 광고. [asset 구성](NATIVE_ASSETS_GUIDE.md) |
 | NativeModule / ViewManager | React Native JS와 플랫폼 SDK/뷰 사이 브리지. 패키지 설치 후 네이티브 재빌드 필요 |
 
-이 문서의 버전 조건은 플러그인 0.6.0 기준이며 상세 [버전표](VERSION_MATRIX.md)와 함께 확인하세요.
+이 문서의 버전 조건은 플러그인 0.6.2 기준이며 상세 [버전표](VERSION_MATRIX.md)와 함께 확인하세요.

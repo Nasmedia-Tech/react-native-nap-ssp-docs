@@ -1,4 +1,4 @@
-# iOS 설정 (플러그인 0.6.0)
+# iOS 설정 (플러그인 0.6.2)
 
 React Native 브리지는 CocoaPods로 설치합니다. 네이티브 nap mx SDK의 SPM 지원과 React Native 플러그인 설치 지원은 별개입니다. [SPM 범위](SPM_GUIDE.md)
 

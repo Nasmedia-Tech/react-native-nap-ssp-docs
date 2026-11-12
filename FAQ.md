@@ -1,6 +1,6 @@
 # 자주 묻는 질문
 
-설치 오류나 런타임 오류의 단계별 해결은 [문제 해결](TROUBLESHOOTING.md)에서 찾으세요. 이 문서는 도입 및 운영 시 자주 하는 선택을 설명합니다. 기준 버전은 플러그인 0.6.0입니다.
+설치 오류나 런타임 오류의 단계별 해결은 [문제 해결](TROUBLESHOOTING.md)에서 찾으세요. 이 문서는 도입 및 운영 시 자주 하는 선택을 설명합니다. 기준 버전은 플러그인 0.6.2입니다.
 
 ## 어떤 React Native 버전을 사용해야 하나요?
 
@@ -38,4 +38,4 @@ Expo Go에는 모듈이 없으므로 커스텀 네이티브 빌드가 필요합�
 
 보상 광고의 `rewarded` 이벤트에 연결합니다. `closed`는 보상 획득을 뜻하지 않습니다. 앱의 거래/사용자 식별 기준으로 중복 지급을 방지하세요. [보상 payload](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/API.md#rewardpayload)
 
-[v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다. 전체 검증 범위는 [버전표](VERSION_MATRIX.md#빌드-검증-범위)를 참고하세요.
+[0.6.2 Android CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230196)에서 GAM+AdFit 구성의 라이브러리 빌드가 통과했습니다. [iOS CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230182)는 브리지 소스 포함, GAM+AdFit 시뮬레이터 앱 빌드 및 코어 전용 자동 연결을 확인했습니다. 전체 어댑터와 실기기 광고·보상 흐름은 검증하지 않았습니다. 전체 검증 범위는 [버전표](VERSION_MATRIX.md#빌드-검증-범위)를 참고하세요.

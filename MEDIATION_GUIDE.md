@@ -51,4 +51,4 @@ Android는 어댑터별 Maven 저장소와 minSdk를 확인하고 compileSdk 35 
 
 설치한 어댑터 → 키 및 저장소 → 서버 waterfall → 해당 네트워크 응답 순으로 확인하세요. 전체 요청이 성공해도 특정 네트워크가 항상 선택되는 것은 아닙니다. `nap_ssp_no_ads`는 단독으로 설치 오류를 증명하지 않습니다. [진단 순서](TROUBLESHOOTING.md#런타임-진단)
 
-버전 기준은 플러그인 0.6.0입니다. [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다.
+버전 기준은 플러그인 0.6.2입니다. [0.6.2 Android CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230196)에서 GAM+AdFit 구성의 라이브러리 빌드가 통과했습니다. [iOS CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230182)는 브리지 소스 포함, GAM+AdFit 시뮬레이터 앱 빌드 및 코어 전용 자동 연결을 확인했습니다. 전체 어댑터와 실기기 광고·보상 흐름은 검증하지 않았습니다.

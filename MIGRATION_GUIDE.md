@@ -1,4 +1,8 @@
-# 0.6.0 마이그레이션
+# 마이그레이션
+
+## 0.6.1에서 0.6.2로
+
+전면형 이벤트 중복과 포맷 간 혼선, iOS 로드 취소·상태 및 CocoaPods 브리지 누락을 수정했습니다. `npm install react-native-nap-ssp@0.6.2` 후 iOS에서 `pod install`을 실행하고 양 플랫폼 앱을 재빌드하세요. 기존 0.6.0 업그레이드 절차도 함께 확인하세요.
 
 업데이트는 JS 패키지와 Android/iOS 네이티브 의존성을 함께 변경합니다. 네이티브 재빌드 없이 번들만 배포하지 마세요.
 
@@ -16,4 +20,4 @@ Android SDK 숫자 오류 값이 바뀌었으므로 앱 분기에는 문서화�
 
 `napSsp.enableVendorSdk`는 제거되었습니다. 이전 모든 어댑터 설치 동작을 유지하려면 `napSsp.mediations=all`이 필요하지만 실제 사용하는 네트워크만 선택하는 것을 권장합니다. [어댑터 선택](MEDIATION_GUIDE.md)
 
-전체 변경 이력: [CHANGELOG](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/CHANGELOG.md), [기존 마이그레이션 상세](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/MIGRATION.md). [v0.6.0 CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43151333114)에서 커밋 `3b02149`의 Android 라이브러리 `assembleDebug`가 GAM+AdFit 기본 예제 설정으로 성공했습니다. 7개 전체 어댑터, 호스트 앱 APK, 실기기 광고 수신 및 iOS Xcode 빌드 검증을 의미하지 않습니다.
+전체 변경 이력: [CHANGELOG](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/CHANGELOG.md), [기존 마이그레이션 상세](https://github.com/glenn-yu/NapSspReactNativePluginSample/blob/main/docs/MIGRATION.md). [0.6.2 Android CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230196)에서 GAM+AdFit 구성의 라이브러리 빌드가 통과했습니다. [iOS CI](https://github.com/glenn-yu/NapSspReactNativePluginSample/actions/runs/43158230182)는 브리지 소스 포함, GAM+AdFit 시뮬레이터 앱 빌드 및 코어 전용 자동 연결을 확인했습니다. 전체 어댑터와 실기기 광고·보상 흐름은 검증하지 않았습니다.
